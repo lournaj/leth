@@ -1,0 +1,14 @@
+app:
+  build: .
+  ports:
+    - "8001:8000"
+  links:
+    - db
+  volumes:
+    - /usr/src/app/static
+  environment:
+    - DJANGO_SETTINGS_MODULE=leth.settings.dev
+db:
+  image: postgres
+  ports:
+    - "5432:5432"
