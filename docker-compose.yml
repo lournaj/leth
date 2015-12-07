@@ -1,13 +1,23 @@
 app:
   build: .
-  ports:
-    - "8001:8000"
+  expose:
+    - "8000"
   links:
     - db
   volumes:
-    - /usr/src/app/static
+    - /app/static
   environment:
     - DJANGO_SETTINGS_MODULE=leth.settings.dev
+web:
+  build: ./docker/nginx/
+  ports:
+    - "8001:80"
+  volumes:
+    - /www/static
+  volumes_from:
+    - app:ro
+  links:
+    - app:app
 db:
   image: postgres
   ports:
