@@ -5,15 +5,22 @@ app:
   links:
     - db
   volumes:
-    - ./src/static:/app/static
+    - ./src:/app/src
   environment:
     - DJANGO_SETTINGS_MODULE=leth.settings.dev
+app-static:
+  build: .
+  volumes:
+    - /static
+  environment:
+    - DJANGO_SETTINGS_MODULE=leth.settings.dev
+  command: python manage.py collectstatic --no-input
 web:
   build: ./nginx/
   ports:
     - "8001:80"
   volumes_from:
-    - app:ro
+    - app-static:ro
   links:
     - app:app
 db:
