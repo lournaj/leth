@@ -37,9 +37,10 @@ THIRD_PARTIES_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
-PROJECT_APPS = []
+PROJECT_APPS = ['core']
 
 INSTALLED_APPS = THIRD_PARTIES_APPS + PROJECT_APPS
 
@@ -105,3 +106,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ]
+}
