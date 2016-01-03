@@ -1,19 +1,18 @@
 app:
-  build: .
+  extends:
+    file: common.yml
+    service: django-app
   expose:
     - "8000"
   links:
     - db
-  volumes:
-    - ./src:/app
-  environment:
-    - DJANGO_SETTINGS_MODULE=leth.settings.dev
+    - rabbit
 app-static:
-  build: .
+  extends:
+    file: common.yml
+    service: django-app
   volumes:
     - /static
-  environment:
-    - DJANGO_SETTINGS_MODULE=leth.settings.dev
   command: python manage.py collectstatic --no-input
 web:
   build: ./nginx/
@@ -27,3 +26,13 @@ db:
   image: postgres
   ports:
     - "5432:5432"
+rabbit:
+  image: rabbitmq
+worker:
+  extends:
+    file: common.yml
+    service: django-app
+  links:
+    - db
+    - rabbit
+  command: celery -A leth worker -l info

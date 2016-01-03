@@ -1,0 +1,6 @@
+django-app:
+  build: .
+  volumes:
+    - ./src:/app
+  environment:
+    - DJANGO_SETTINGS_MODULE=leth.settings.dev

@@ -15,3 +15,6 @@ DATABASES = {
 PROJECT_APPS += [
         'django-debug-toolbar',
         ]
+
+# Celery settings
+BROKER_URL = 'amqp://guest:guest@rabbit//'
