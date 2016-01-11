@@ -15,15 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from rest_framework import routers
 from core import views
-
-router = routers.DefaultRouter()
-router.register(r'feeds', views.FeedViewSet)
-router.register(r'articles', views.ArticleViewSet)
+from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    url(r'^feeds/$', views.FeedList.as_view()),
+    url(r'^feeds/(?P<pk>[0-9]+)/$', views.FeedDetail.as_view()),
+    url(r'^articles/$', views.ReadingList.as_view()),
+    url(r'^articles/(?P<pk>[0-9]+)/$', views.ArticleDetail.as_view()),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)
