@@ -41,6 +41,9 @@ class FeedSubscription(models.Model):
     def __str__(self):
         return "{} - {}".format(self.user, self.feed)
 
+    class Meta:
+        unique_together = ('user', 'feed')
+
 
 class ReadingEntry(models.Model):
     """Association between an article and a user"""
@@ -52,6 +55,7 @@ class ReadingEntry(models.Model):
     class Meta:
         verbose_name = "Reading entry"
         verbose_name_plural = "Reading entries"
+        unique_together = ('user', 'article')
 
     def __str__(self):
         return "{} - {}".format(self.user.username, self.article.url[:50])
