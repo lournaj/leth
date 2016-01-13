@@ -9,9 +9,9 @@ import feedparser
 def fetch_feed(feed_id):
     feed = Feed.objects.get(pk=feed_id)
     try:
-        data = feedparser.parse(feed.url)
+        data = feedparser.parse(feed.link)
         for post in data.entries:
-            article = Article(url=post.link, title=post.title,
+            article = Article(link=post.link, title=post.title,
                               content=post.summary, feed=feed)
             article.save()
     except Exception as e:

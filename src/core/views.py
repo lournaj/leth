@@ -1,6 +1,17 @@
 from rest_framework import generics
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from .models import ReadingEntry, FeedSubscription
 from .serializers import (ReadingEntrySerializer, FeedSubscriptionSerializer)
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'feeds': reverse('feed-list', request=request, format=format),
+        'articles': reverse('article-list', request=request, format=format),
+    })
 
 
 class ReadingList(generics.ListCreateAPIView):

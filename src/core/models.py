@@ -5,7 +5,7 @@ import core.constants as cst
 
 class Feed(models.Model):
     """A feed can be seen as a collection of articles"""
-    url = models.URLField(unique=True)
+    link = models.URLField(unique=True)
     name = models.CharField(max_length=255)
     last_fetch = models.DateTimeField(null=True)
     next_fetch = models.DateTimeField(auto_now_add=True)
@@ -14,12 +14,12 @@ class Feed(models.Model):
                                  default=cst.PENDING_STATUS)
 
     def __str__(self):
-        return self.url
+        return self.link
 
 
 class Article(models.Model):
     """An article represent a web page which content has been saved."""
-    url = models.URLField(unique=True)
+    link = models.URLField(unique=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
     status = models.IntegerField(choices=cst.Statuses,
@@ -29,7 +29,7 @@ class Article(models.Model):
     subscribers = models.ManyToManyField(User, through='ReadingEntry')
 
     def __str__(self):
-        return self.url
+        return self.link
 
 
 class FeedSubscription(models.Model):
@@ -58,4 +58,4 @@ class ReadingEntry(models.Model):
         unique_together = ('user', 'article')
 
     def __str__(self):
-        return "{} - {}".format(self.user.username, self.article.url[:50])
+        return "{} - {}".format(self.user.username, self.article.link[:50])
