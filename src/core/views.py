@@ -9,8 +9,8 @@ from .serializers import (ReadingEntrySerializer, FeedSubscriptionSerializer)
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'feeds': reverse('feed-list', request=request, format=format),
-        'articles': reverse('article-list', request=request, format=format),
+        'feeds': reverse('feedsubscription-list', request=request, format=format),
+        'articles': reverse('readingentry-list', request=request, format=format),
     })
 
 

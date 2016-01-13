@@ -6,7 +6,7 @@ class FeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
         fields = ('link', 'name', 'status')
-        read_only_fields = ('name', 'status', 'link')
+        read_only_fields = ('name', 'status')
 
 
 class ArticleSerializer(serializers.ModelSerializer):

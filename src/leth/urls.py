@@ -20,9 +20,9 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     url(r'^$', views.api_root),
-    url(r'^feeds/$', views.FeedList.as_view(), name='feed-list'),
+    url(r'^feeds/$', views.FeedList.as_view(), name='feedsubscription-list'),
     url(r'^feeds/(?P<pk>[0-9]+)/$', views.FeedDetail.as_view(), name='feedsubscription-detail'),
-    url(r'^articles/$', views.ReadingList.as_view(), name='article-list'),
+    url(r'^articles/$', views.ReadingList.as_view(), name='readingentry-list'),
     url(r'^articles/(?P<pk>[0-9]+)/$', views.ArticleDetail.as_view(), name='readingentry-detail'),
     url(r'^admin/', include(admin.site.urls)),
 ]

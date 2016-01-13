@@ -12,7 +12,8 @@ def fetch_feed(feed_id):
         data = feedparser.parse(feed.link)
         for post in data.entries:
             article = Article(link=post.link, title=post.title,
-                              content=post.summary, feed=feed)
+                              content=post.summary, feed=feed,
+                              status=cst.READY_STATUS)
             article.save()
     except Exception as e:
         print(e)
