@@ -13,7 +13,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ('link', 'title', 'content', 'status')
-        read_only_fields = ('title', 'content', 'status', 'link')
+        read_only_fields = ('title', 'content', 'status')
 
 
 class FeedSubscriptionSerializer(serializers.HyperlinkedModelSerializer):
@@ -50,7 +50,7 @@ class ReadingEntrySerializer(serializers.HyperlinkedModelSerializer):
         try:
             article = Article.objects.get(link=article_data.get('link'))
         except Article.DoesNotExist:
-            article = Feed.objects.create(**article_data)
+            article = Article.objects.create(**article_data)
         entry.article = article
         entry.save()
         return entry

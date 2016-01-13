@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from .models import ReadingEntry, FeedSubscription
 from .serializers import (ReadingEntrySerializer, FeedSubscriptionSerializer)
+from .permissions import IsOwner
 
 
 @api_view(['GET'])
@@ -16,6 +17,7 @@ def api_root(request, format=None):
 
 class ReadingList(generics.ListCreateAPIView):
     serializer_class = ReadingEntrySerializer
+    permission_classes = [IsOwner]
 
     def get_queryset(self):
         user = self.request.user
@@ -27,6 +29,7 @@ class ReadingList(generics.ListCreateAPIView):
 
 class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReadingEntrySerializer
+    permission_classes = [IsOwner]
 
     def get_queryset(self):
         user = self.request.user
@@ -35,6 +38,7 @@ class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class FeedList(generics.ListCreateAPIView):
     serializer_class = FeedSubscriptionSerializer
+    permission_classes = [IsOwner]
 
     def get_queryset(self):
         user = self.request.user
@@ -46,6 +50,7 @@ class FeedList(generics.ListCreateAPIView):
 
 class FeedDetail(generics.RetrieveDestroyAPIView):
     serializer_class = FeedSubscriptionSerializer
+    permission_classes = [IsOwner]
 
     def get_queryset(self):
         user = self.request.user
