@@ -5,15 +5,15 @@ from rest_framework import serializers
 class FeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
-        fields = ('link', 'name', 'status')
-        read_only_fields = ('name', 'status')
+        fields = ('link', 'name', 'status', 'last_fetch', 'next_fetch')
+        read_only_fields = ('name', 'status', 'last_fetch', 'next_fetch')
 
 
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ('link', 'title', 'content', 'status')
-        read_only_fields = ('title', 'content', 'status')
+        fields = ('link', 'title', 'content', 'status', 'last_fetch')
+        read_only_fields = ('title', 'content', 'status', 'last_fetch')
 
 
 class FeedSubscriptionSerializer(serializers.HyperlinkedModelSerializer):
@@ -27,10 +27,7 @@ class FeedSubscriptionSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         feed_data = validated_data.pop('feed')
         subscription = FeedSubscription(**validated_data)
-        try:
-            feed = Feed.objects.get(link=feed_data.get('link'))
-        except Feed.DoesNotExist:
-            feed = Feed.objects.create(**feed_data)
+        feed = Feed.objects.get_or_create(**feed_data)
         subscription.feed = feed
         subscription.save()
         return subscription
@@ -47,10 +44,7 @@ class ReadingEntrySerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         article_data = validated_data.pop('article')
         entry = ReadingEntry(**validated_data)
-        try:
-            article = Article.objects.get(link=article_data.get('link'))
-        except Article.DoesNotExist:
-            article = Article.objects.create(**article_data)
+        article = Article.objects.get_or_create(**article_data)
         entry.article = article
         entry.save()
         return entry

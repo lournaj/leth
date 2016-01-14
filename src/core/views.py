@@ -10,8 +10,10 @@ from .permissions import IsOwner
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'feeds': reverse('feedsubscription-list', request=request, format=format),
-        'articles': reverse('readingentry-list', request=request, format=format),
+        'feeds': reverse('feedsubscription-list', request=request,
+                         format=format),
+        'articles': reverse('readingentry-list', request=request,
+                            format=format),
     })
 
 

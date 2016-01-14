@@ -23,13 +23,13 @@ def fetch_feed(feed_id):
     except Exception as e:
         print(e)
         feed.status = cst.ERROR_STATUS
+        feed.last_fetch = timezone.now()
         feed.save()
     else:
         if feed.status != cst.READY_STATUS:
             feed.status = cst.READY_STATUS
         if not feed.name:
             feed.name = data.feed.title
-        feed.last_fetch = timezone.now()
         feed.save()
 
 
@@ -45,8 +45,10 @@ def fetch_article(article_id):
             article.status = cst.READY_STATUS
         else:
             article.status = cst.ERROR_STATUS
+        article.last_fetch = timezone.now()
         article.save()
     except Exception as e:
         print(e)
         article.status = cst.ERROR_STATUS
+        article.last_fetch = timezone.now()
         article.save()

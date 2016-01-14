@@ -7,10 +7,10 @@ from core.tasks import fetch_feed, fetch_article
 @receiver(post_save, sender=Feed)
 def get_feed_on_creation(sender, instance, created, **kwargs):
     if created:
-        fetch_feed.delay(instance.id)
+        fetch_feed.apply_async((instance.id,), countdown=3)
 
 
 @receiver(post_save, sender=Article)
 def get_article_on_creation(sender, instance, created, **kwargs):
     if created and not instance.content:
-        fetch_article.delay(instance.id)
+        fetch_article.apply_async((instance.id,), countdown=3)
