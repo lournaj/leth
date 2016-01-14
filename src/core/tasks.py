@@ -13,9 +13,13 @@ def fetch_feed(feed_id):
     try:
         data = feedparser.parse(feed.link)
         for post in data.entries:
-            article = Article(link=post.link, title=post.title,
-                              content=post.summary, feed=feed,
-                              status=cst.READY_STATUS)
+            article, created = Article.objects.get_or_create(link=post.link)
+            if created:
+                print("Article created")
+            article.title = post.title
+            article.content = post.summary
+            article.feed = feed
+            article.status = cst.READY_STATUS
             article.save()
             for subscriber in feed.subscribers.all():
                 entry = ReadingEntry(user=subscriber, article=article)

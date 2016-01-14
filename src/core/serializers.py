@@ -1,8 +1,11 @@
 from .models import Feed, Article, ReadingEntry, FeedSubscription
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 
 class FeedSerializer(serializers.ModelSerializer):
+    link = serializers.URLField(max_length=200)
+
     class Meta:
         model = Feed
         fields = ('link', 'name', 'status', 'last_fetch', 'next_fetch')
@@ -10,6 +13,8 @@ class FeedSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
+    link = serializers.URLField(max_length=200)
+
     class Meta:
         model = Article
         fields = ('link', 'title', 'content', 'status', 'last_fetch')
@@ -27,7 +32,7 @@ class FeedSubscriptionSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         feed_data = validated_data.pop('feed')
         subscription = FeedSubscription(**validated_data)
-        feed = Feed.objects.get_or_create(**feed_data)
+        feed, _ = Feed.objects.get_or_create(**feed_data)
         subscription.feed = feed
         subscription.save()
         return subscription
@@ -44,7 +49,7 @@ class ReadingEntrySerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         article_data = validated_data.pop('article')
         entry = ReadingEntry(**validated_data)
-        article = Article.objects.get_or_create(**article_data)
+        article, _ = Article.objects.get_or_create(**article_data)
         entry.article = article
         entry.save()
         return entry
