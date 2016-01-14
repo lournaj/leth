@@ -16,19 +16,15 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from core import views
-from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'feeds', views.FeedViewSet, 'feedsubscription')
+router.register(r'articles', views.ArticleViewSet, 'readingentry')
 
 urlpatterns = [
-    url(r'^$', views.api_root),
-    url(r'^feeds/$', views.FeedList.as_view(), name='feedsubscription-list'),
-    url(r'^feeds/(?P<pk>[0-9]+)/$', views.FeedDetail.as_view(), name='feedsubscription-detail'),
-    url(r'^articles/$', views.ReadingList.as_view(), name='readingentry-list'),
-    url(r'^articles/(?P<pk>[0-9]+)/$', views.ArticleDetail.as_view(), name='readingentry-detail'),
     url(r'^admin/', include(admin.site.urls)),
-]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
-
-urlpatterns += [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
+
+urlpatterns += router.urls
