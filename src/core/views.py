@@ -1,23 +1,10 @@
-from rest_framework import generics, permissions
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
+from rest_framework import permissions
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import (CreateModelMixin, RetrieveModelMixin,
                                    ListModelMixin, DestroyModelMixin)
 from .models import ReadingEntry, FeedSubscription
 from .serializers import (ReadingEntrySerializer, FeedSubscriptionSerializer)
 from .permissions import IsOwner
-
-
-@api_view(['GET'])
-def api_root(request, format=None):
-    return Response({
-        'feeds': reverse('feedsubscription-list', request=request,
-                         format=format),
-        'articles': reverse('readingentry-list', request=request,
-                            format=format),
-    })
 
 
 class FeedViewSet(CreateModelMixin,
