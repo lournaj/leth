@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import core.constants as cst
+import uuid
 
 
 class Feed(models.Model):
@@ -35,6 +36,7 @@ class Article(models.Model):
 
 class FeedSubscription(models.Model):
     """Association between a user and a feed"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE)
     subscribed_at = models.DateTimeField(auto_now_add=True)
@@ -48,6 +50,7 @@ class FeedSubscription(models.Model):
 
 class ReadingEntry(models.Model):
     """Association between an article and a user"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
