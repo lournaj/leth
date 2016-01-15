@@ -34,6 +34,7 @@ def fetch_feed(feed_id):
             feed.status = cst.READY_STATUS
         if not feed.name:
             feed.name = data.feed.title
+        feed.last_fetch = timezone.now()
         feed.save()
 
 
