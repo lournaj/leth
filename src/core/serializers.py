@@ -32,8 +32,10 @@ class FeedSubscriptionSerializer(serializers.HyperlinkedModelSerializer):
         """Check that user has not already subscribed to the feed"""
         user = self.context['request'].user
         link = data['feed']['link']
-        if FeedSubscription.objects.filter(user=user, feed__link=link).exists():
-            raise serializers.ValidationError('You have already subscribed to this feed')
+        if FeedSubscription.objects.filter(
+                user=user, feed__link=link).exists():
+            raise serializers.ValidationError(
+                'You have already subscribed to this feed')
         return data
 
     def create(self, validated_data):
@@ -55,10 +57,12 @@ class ReadingEntrySerializer(serializers.HyperlinkedModelSerializer):
 
     def validate(self, data):
         """Check that article is not already in reading list"""
-        user = self.context['request'].user
+        request = self.context['request']
         link = data['article']['link']
-        if ReadingEntry.objects.filter(user=user, article__link=link).exists():
-            raise serializers.ValidationError('This article is already in your reading list')
+        if request.method == 'POST' and ReadingEntry.objects.filter(
+                user=request.user, article__link=link).exists():
+            raise serializers.ValidationError(
+                'This article is already in your reading list')
         return data
 
     def create(self, validated_data):
@@ -68,3 +72,10 @@ class ReadingEntrySerializer(serializers.HyperlinkedModelSerializer):
         entry.article = article
         entry.save()
         return entry
+
+
+class ReadingEntryUpdateSerializer(serializers.HyperlinkedModelSerializer):
+    article = ArticleSerializer(read_only=True)
+
+    class Meta(ReadingEntrySerializer.Meta):
+        pass

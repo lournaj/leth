@@ -4,7 +4,8 @@ from rest_framework.mixins import (CreateModelMixin, RetrieveModelMixin,
                                    ListModelMixin, DestroyModelMixin,
                                    UpdateModelMixin)
 from .models import ReadingEntry, FeedSubscription
-from .serializers import (ReadingEntrySerializer, FeedSubscriptionSerializer)
+from .serializers import (ReadingEntrySerializer, FeedSubscriptionSerializer,
+                          ReadingEntryUpdateSerializer)
 from .permissions import IsOwner
 
 
@@ -32,6 +33,12 @@ class ArticleViewSet(CreateModelMixin,
                      GenericViewSet):
     serializer_class = ReadingEntrySerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
+
+    def get_serializer_class(self):
+        if self.action == 'update':
+            return ReadingEntryUpdateSerializer
+        else:
+            return self.serializer_class
 
     def get_queryset(self):
         user = self.request.user
