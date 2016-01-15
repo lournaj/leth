@@ -1,7 +1,8 @@
 from rest_framework import permissions
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import (CreateModelMixin, RetrieveModelMixin,
-                                   ListModelMixin, DestroyModelMixin)
+                                   ListModelMixin, DestroyModelMixin,
+                                   UpdateModelMixin)
 from .models import ReadingEntry, FeedSubscription
 from .serializers import (ReadingEntrySerializer, FeedSubscriptionSerializer)
 from .permissions import IsOwner
@@ -27,6 +28,7 @@ class ArticleViewSet(CreateModelMixin,
                      RetrieveModelMixin,
                      ListModelMixin,
                      DestroyModelMixin,
+                     UpdateModelMixin,
                      GenericViewSet):
     serializer_class = ReadingEntrySerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]

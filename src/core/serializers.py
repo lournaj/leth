@@ -1,6 +1,5 @@
 from .models import Feed, Article, ReadingEntry, FeedSubscription
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 
 
 class FeedSerializer(serializers.ModelSerializer):
@@ -8,8 +7,8 @@ class FeedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Feed
-        fields = ('link', 'name', 'status', 'last_fetch', 'next_fetch')
-        read_only_fields = ('name', 'status', 'last_fetch', 'next_fetch')
+        fields = ('link', 'name', 'status', 'last_fetch')
+        read_only_fields = ('name', 'status', 'last_fetch')
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -29,6 +28,14 @@ class FeedSubscriptionSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'subscribed_at', 'feed')
         read_only_fields = ('subscribed_at',)
 
+    def validate(self, data):
+        """Check that user has not already subscribed to the feed"""
+        user = self.context['request'].user
+        link = data['feed']['link']
+        if FeedSubscription.objects.filter(user=user, feed__link=link).exists():
+            raise serializers.ValidationError('You have already subscribed to this feed')
+        return data
+
     def create(self, validated_data):
         feed_data = validated_data.pop('feed')
         subscription = FeedSubscription(**validated_data)
@@ -45,6 +52,14 @@ class ReadingEntrySerializer(serializers.HyperlinkedModelSerializer):
         model = ReadingEntry
         fields = ('url', 'article', 'created_at', 'read')
         read_only_fields = ('created_at',)
+
+    def validate(self, data):
+        """Check that article is not already in reading list"""
+        user = self.context['request'].user
+        link = data['article']['link']
+        if ReadingEntry.objects.filter(user=user, article__link=link).exists():
+            raise serializers.ValidationError('This article is already in your reading list')
+        return data
 
     def create(self, validated_data):
         article_data = validated_data.pop('article')
