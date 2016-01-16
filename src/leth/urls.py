@@ -21,6 +21,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r'feeds', views.FeedViewSet, 'feedsubscription')
 router.register(r'articles', views.ArticleViewSet, 'readingentry')
+router.register(r'opml', views.OPMLViewSet, 'opml')
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<opml version="1.0">
+  <head>
+    <dateCreated>{{date|date:"r"}}</dateCreated>
+    <title>Leth OPML export</title>
+  </head>
+  <body>
+    {% for feed in feeds %}<outline type="rss" text="{{feed.name}}" xmlUrl="{{feed.link}}" htmlUrl="???"/>{% endfor %}
+  </body>
+</opml>

@@ -40,7 +40,7 @@ class ArticleAdmin(admin.ModelAdmin):
     inlines = [ReadingEntryInline]
     list_display = ['title', 'link', 'status', 'last_fetch',
                     'subscribers_count']
-    list_display_links = ['title', 'name']
+    list_display_links = ['title']
     list_filter = ['status', 'last_fetch']
 
     def force_article_fetch(self, reuest, queryset):

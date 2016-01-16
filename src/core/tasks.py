@@ -1,6 +1,7 @@
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 from celery import shared_task
-from .models import Article, Feed, ReadingEntry
+from .models import Article, Feed, ReadingEntry, FeedSubscription
 import core.constants as cst
 import feedparser
 import requests
@@ -57,3 +58,12 @@ def fetch_article(article_id):
         article.status = cst.ERROR_STATUS
         article.last_fetch = timezone.now()
         article.save()
+
+
+@shared_task
+def import_feed_list(user_id, feed_list):
+    User = get_user_model()
+    user = User.objects.get(pk=user_id)
+    for link in feed_list:
+        feed, _ = Feed.objects.get_or_create(link=link)
+        FeedSubscription.objects.get_or_create(user=user, feed=feed)
