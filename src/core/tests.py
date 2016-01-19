@@ -5,6 +5,7 @@ from core.permissions import IsOwner
 
 
 class PermissionsTest(TestCase):
+
     def setUp(self):
         self.owner = User.objects.create(username='owner', email='owner@local')
         self.other = User.objects.create(username='other', email='other@local')

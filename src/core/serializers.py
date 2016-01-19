@@ -25,7 +25,7 @@ class FeedSubscriptionSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = FeedSubscription
-        fields = ('url', 'subscribed_at', 'feed')
+        fields = ('url', 'subscribed_at', 'feed', 'unread')
         read_only_fields = ('subscribed_at',)
 
     def validate(self, data):
