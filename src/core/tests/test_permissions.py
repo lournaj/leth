@@ -7,11 +7,10 @@ from core.permissions import IsOwner
 class PermissionsTest(TestCase):
 
     def setUp(self):
-        self.owner = User.objects.create(username='owner', email='owner@local')
-        self.other = User.objects.create(username='other', email='other@local')
-        article = Article.objects.create(link='http://nowhere.local')
-        self.entry = ReadingEntry.objects.create(user=self.owner,
-                                                 article=article)
+        self.owner = User(username='owner', email='owner@local')
+        self.other = User(username='other', email='other@local')
+        article = Article(link='http://nowhere.local')
+        self.entry = ReadingEntry(user=self.owner, article=article)
         self.factory = RequestFactory()
 
     def test_owner_user(self):
