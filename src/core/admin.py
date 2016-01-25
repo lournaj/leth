@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .tasks import fetch_feed, fetch_article
+from .tasks.fetch import fetch_feed, fetch_article
 from .models import Feed, Article, FeedSubscription, ReadingEntry
 
 

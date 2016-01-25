@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from core.models import Feed, Article
-from core.tasks import fetch_feed, fetch_article
+from core.tasks.fetch import fetch_feed, fetch_article
 
 
 @receiver(post_save, sender=Feed)

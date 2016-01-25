@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from django.template import loader, Context
 from django.utils import timezone
 from lxml import etree
-from .tasks import import_feed_list
+from .tasks.fetch import import_feed_list
 
 
 class FeedViewSet(CreateModelMixin,

@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from celery import shared_task
-from .models import Article, Feed, ReadingEntry, FeedSubscription
+from core.models import Article, Feed, ReadingEntry, FeedSubscription
 import core.constants as cst
 import feedparser
 import requests

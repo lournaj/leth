@@ -36,3 +36,11 @@ worker:
     - db
     - rabbit
   command: celery -A leth worker -l info
+beat:
+  extends:
+    file: common.yml
+    service: django-app
+  links:
+    - db
+    - rabbit
+  command: celery -A leth beat -l info
