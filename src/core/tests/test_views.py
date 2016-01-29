@@ -6,6 +6,8 @@ from rest_framework import status
 from lxml import etree
 from datetime import datetime
 from django.utils import timezone
+from django.test import Client
+from io import StringIO
 
 
 class FeedTest(APITestCase):
@@ -98,3 +100,27 @@ class OPMLTest(APITestCase):
         self.assertEqual(len(opml[1]), 2)
         dt = datetime.strptime(opml[0][0].text, '%a, %d %b %Y %H:%M:%S %z')
         self.assertEqual(dt.date(), timezone.now().date())
+
+    def test_opml_import_no_file(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_opml_import_parse_error(self):
+        # For some reason file upload does not work with apiclient
+        c = Client()
+        c.force_login(self.user)
+        with StringIO('Not valid xml') as fp:
+            response = c.post(self.url, {'file': fp})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_opml_import(self):
+        # For some reason file upload does not work with apiclient
+        c = Client()
+        c.force_login(self.user)
+        self.client.force_authenticate(user=self.user)
+        with open('core/tests/opml_test.xml') as fp:
+            response = c.post(self.url, {'file': fp})
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # There are 2 feeds in OPML file
+        self.assertEqual(self.user.feedsubscription_set.count(), 2)
