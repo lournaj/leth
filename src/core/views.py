@@ -9,7 +9,7 @@ from .serializers import (ReadingEntrySerializer, FeedSubscriptionSerializer,
                           ReadingEntryUpdateSerializer)
 from .permissions import IsOwner
 from django.http import HttpResponse
-from django.template import loader, Context
+from django.template import loader
 from django.utils import timezone
 from lxml import etree
 from .tasks.fetch import import_feed_list
@@ -40,7 +40,7 @@ class OPMLViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
         response = HttpResponse(content_type='application/xml')
         response['Content-Disposition'] = 'attachment; filename="leth_opml.xml"'
         t = loader.get_template('core/opml.xml')
-        c = Context({'feeds': feeds, 'date': timezone.now()})
+        c = {'feeds': feeds, 'date': timezone.now()}
         response.write(t.render(c))
         return response
 
