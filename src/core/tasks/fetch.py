@@ -1,22 +1,26 @@
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from celery import shared_task
+import logging
 from core.models import Article, Feed, ReadingEntry, FeedSubscription
 import core.constants as cst
 import feedparser
 import requests
 from readability.readability import Document
 
+logger = logging.getLogger(__name__)
+
 
 @shared_task
 def fetch_feed(feed_id):
     feed = Feed.objects.get(pk=feed_id)
+    feed.last_fetch = timezone.now()
     try:
         data = feedparser.parse(feed.link)
         for post in data.entries:
             article, created = Article.objects.get_or_create(link=post.link)
             if created:
-                print("Article created")
+                logger.info("Article created: {}".format(post.link))
             article.title = post.title
             article.content = post.summary
             article.feed = feed
@@ -26,22 +30,21 @@ def fetch_feed(feed_id):
                 entry = ReadingEntry(user=subscriber, article=article)
                 entry.save()
     except Exception as e:
-        print(e)
+        logger.error(e)
         feed.status = cst.ERROR_STATUS
-        feed.last_fetch = timezone.now()
         feed.save()
     else:
         if feed.status != cst.READY_STATUS:
             feed.status = cst.READY_STATUS
         if not feed.name:
             feed.name = data.feed.title
-        feed.last_fetch = timezone.now()
         feed.save()
 
 
 @shared_task
 def fetch_article(article_id):
     article = Article.objects.get(pk=article_id)
+    article.last_fetch = timezone.now()
     try:
         response = requests.get(article.link)
         if response.ok:
@@ -51,12 +54,10 @@ def fetch_article(article_id):
             article.status = cst.READY_STATUS
         else:
             article.status = cst.ERROR_STATUS
-        article.last_fetch = timezone.now()
         article.save()
     except Exception as e:
-        print(e)
+        logger.error(e)
         article.status = cst.ERROR_STATUS
-        article.last_fetch = timezone.now()
         article.save()
 
 
