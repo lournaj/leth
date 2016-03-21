@@ -8,6 +8,7 @@ from datetime import datetime
 from django.utils import timezone
 from django.test import Client
 from io import StringIO
+from os import path
 
 
 class FeedTest(APITestCase):
@@ -119,7 +120,7 @@ class OPMLTest(APITestCase):
         c = Client()
         c.force_login(self.user)
         self.client.force_authenticate(user=self.user)
-        with open('core/tests/opml_test.xml') as fp:
+        with open(path.join(path.dirname(__file__), 'opml_test.xml')) as fp:
             response = c.post(self.url, {'file': fp})
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         # There are 2 feeds in OPML file
