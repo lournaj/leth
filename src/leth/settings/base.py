@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -122,3 +123,10 @@ CORS_ORIGIN_ALLOW_ALL = True
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+CELERYBEAT_SCHEDULE = {
+    'update-feeds': {
+        'task': 'core.tasks.update.update_feeds',
+        'schedule': timedelta(minutes=10),
+    },
+}
