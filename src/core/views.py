@@ -1,4 +1,4 @@
-from rest_framework import permissions, status
+from rest_framework import permissions, status, filters
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import (CreateModelMixin, RetrieveModelMixin,
@@ -13,6 +13,7 @@ from django.template import loader
 from django.utils import timezone
 from lxml import etree
 from .tasks.fetch import import_feed_list
+from .filters import ReadingEntryFilter, FeedSubscriptionFilter
 
 
 class FeedViewSet(CreateModelMixin,
@@ -22,6 +23,9 @@ class FeedViewSet(CreateModelMixin,
                   GenericViewSet):
     serializer_class = FeedSubscriptionSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
+    filter_backends = (filters.OrderingFilter, filters.DjangoFilterBackend,)
+    ordering_fields = ('subscribed_at',)
+    filter_class = FeedSubscriptionFilter
 
     def get_queryset(self):
         user = self.request.user
@@ -70,6 +74,9 @@ class ArticleViewSet(CreateModelMixin,
                      GenericViewSet):
     serializer_class = ReadingEntrySerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
+    filter_backends = (filters.OrderingFilter, filters.DjangoFilterBackend,)
+    ordering_fields = ('read', 'created_at')
+    filter_class = ReadingEntryFilter
 
     def get_serializer_class(self):
         if self.action == 'update':

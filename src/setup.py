@@ -10,6 +10,7 @@ install_requires = [
     'requests==2.9.1',
     'readability-lxml==0.6.1',
     'django-cors-headers==1.1.0',
+    'django-filter==0.13.0',
 ]
 
 setup(
