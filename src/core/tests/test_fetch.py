@@ -49,3 +49,16 @@ class ArticleFetchTest(TestCase):
         retrieve_article_content(article)
         mock_requests.get.assert_called_with(article.link)
         self.assertEqual(article.status, cst.ERROR_STATUS)
+
+    @patch('core.tasks.fetch.requests')
+    def test_fetch(self, mock_requests):
+        article = Article(link='http://test')
+        mock_requests.get.return_value.status_code = 200
+        mock_requests.get.return_value.content = '<html>\
+        <head><title>Test</title></head>\
+        <body><h1>Test</h1>\
+        <p>content</p>\
+        </html>'
+        retrieve_article_content(article)
+        mock_requests.get.assert_called_with(article.link)
+        self.assertEqual(article.status, cst.READY_STATUS)
