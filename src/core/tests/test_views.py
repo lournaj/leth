@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.test import Client
 from io import StringIO
 from os import path
+from unittest.mock import patch
 
 
 class FeedTest(APITestCase):
@@ -59,8 +60,10 @@ class ArticleTest(APITestCase):
     def test_duplicate_article_error(self):
         data = {'article': {'link': 'http://test.nowhere/test.html'}}
         self.client.force_authenticate(user=self.user)
-        response = self.client.post(self.url, data)
-        response = self.client.post(self.url, data)
+        with patch('requests.get') as mock_get:
+            mock_get.side_effect = Exception('test')
+            response = self.client.post(self.url, data)
+            response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             response.data,
@@ -71,7 +74,9 @@ class ArticleTest(APITestCase):
     def test_article_read(self):
         data = {'article': {'link': 'http://test.nowhere/test.html'}}
         self.client.force_authenticate(user=self.user)
-        response = self.client.post(self.url, data)
+        with patch('requests.get') as mock_get:
+            mock_get.side_effect = Exception('test')
+            response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         data = response.data
         reading_date = '2016-01-01T12:12:12Z'
