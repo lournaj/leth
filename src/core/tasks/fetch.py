@@ -11,16 +11,12 @@ from readability.readability import Document
 logger = logging.getLogger(__name__)
 
 
-@shared_task
-def fetch_feed(feed_id):
-    feed = Feed.objects.get(pk=feed_id)
+def retrieve_feed_content(feed):
     feed.last_fetch = timezone.now()
     try:
         data = feedparser.parse(feed.link)
         for post in data.entries:
             article, created = Article.objects.get_or_create(link=post.link)
-            if created:
-                logger.info("Article created: {}".format(post.link))
             article.title = post.title
             article.content = post.summary
             article.feed = feed
@@ -41,9 +37,7 @@ def fetch_feed(feed_id):
         feed.save()
 
 
-@shared_task
-def fetch_article(article_id):
-    article = Article.objects.get(pk=article_id)
+def retrieve_article_content(article):
     article.last_fetch = timezone.now()
     try:
         response = requests.get(article.link)
@@ -59,6 +53,18 @@ def fetch_article(article_id):
         logger.error(e)
         article.status = cst.ERROR_STATUS
         article.save()
+
+
+@shared_task
+def fetch_feed(feed_id):
+    feed = Feed.objects.get(pk=feed_id)
+    retrieve_feed_content(feed)
+
+
+@shared_task
+def fetch_article(article_id):
+    article = Article.objects.get(pk=article_id)
+    retrieve_article_content(article)
 
 
 @shared_task

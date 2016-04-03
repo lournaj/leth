@@ -25,7 +25,7 @@ class StrTest(TestCase):
 
     def test_subscription_str(self):
         username = 'test'
-        link = 'https://www.somewhere.com/feer.atom'
+        link = 'https://www.somewhere.com/feed.atom'
         user = User(username=username)
         feed = Feed(link=link)
         subscription = FeedSubscription(user=user, feed=feed)
