@@ -9,6 +9,6 @@ def update_feeds():
     """
     Fetch feeds which are due (now > next_fetch)
     """
-    feeds = Feed.objects.filter(next_fetch__gte=timezone.now())
+    feeds = Feed.objects.filter(next_fetch__lte=timezone.now())
     for feed in feeds:
         fetch_feed.delay(feed.id)

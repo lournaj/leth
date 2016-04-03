@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 import core.constants as cst
 import uuid
 
@@ -9,7 +10,7 @@ class Feed(models.Model):
     link = models.URLField(unique=True)
     name = models.CharField(max_length=255, blank=True)
     last_fetch = models.DateTimeField(null=True, blank=True)
-    next_fetch = models.DateTimeField(auto_now_add=True)
+    next_fetch = models.DateTimeField(default=timezone.now)
     subscribers = models.ManyToManyField(User, through='FeedSubscription')
     status = models.IntegerField(choices=cst.Statuses,
                                  default=cst.PENDING_STATUS)
