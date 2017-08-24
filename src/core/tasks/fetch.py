@@ -21,7 +21,6 @@ def retrieve_feed_content(feed):
             article.content = post.summary
             article.feed = feed
             article.status = cst.READY_STATUS
-            logger.debug('content: %s', article.content)
             article.save()
             for subscriber in feed.subscribers.all():
                 entry = ReadingEntry(user=subscriber, article=article)
